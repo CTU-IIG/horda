@@ -1,0 +1,2 @@
+tqdm==4.64.1
+tensorflow==2.10.0
