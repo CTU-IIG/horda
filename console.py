@@ -17,7 +17,8 @@ from utils.regressor import ModelRegressor, ZeroRegressor
 @click.option('--instances_file', help='Json file with list of instances.')
 @click.option('--instance', help='')
 @click.option('--output_file', help='Path to file with results.')
-def evaluate_instance(nn=None, instances_file=None, instance=None, output_file=None):
+@click.option('--optimal', is_flag=True)
+def evaluate_instance(nn=None, instances_file=None, instance=None, output_file=None, optimal=False):
     instances = []
     if instance:
         print(instance)
@@ -76,9 +77,10 @@ def evaluate_instance(nn=None, instances_file=None, instance=None, output_file=N
         results[k] = {}
         results[k]['HORDA'] = est.estimate(inst)[0].to_human()
 
-    full = MetaEstimator.from_lazy(ForceClass(ShorterSplitter), ForceClass(ZeroRegressor), ForceClass(FullFilter)).force()
-    for k, inst in tqdm(instances_obj.items()):
-        results[k]['OPT'] = full.estimate(inst)[0].to_human()
+    if optimal:
+        full = MetaEstimator.from_lazy(ForceClass(ShorterSplitter), ForceClass(ZeroRegressor), ForceClass(FullFilter)).force()
+        for k, inst in tqdm(instances_obj.items()):
+            results[k]['OPT'] = full.estimate(inst)[0].to_human()
 
     print('Results:')
     print(results)
